@@ -1,6 +1,6 @@
 # Zephyr
 
-[![Release CI](https://github.com/hossein/zephyr/actions/workflows/release.yml/badge.svg)](https://github.com/hossein/zephyr/actions/workflows/release.yml)
+[![Release CI](https://github.com/haliyari/zephyr/actions/workflows/release.yml/badge.svg)](https://github.com/haliyari/zephyr/actions/workflows/release.yml)
 [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](LICENSE)
 [![Rust 100%](https://img.shields.io/badge/Rust-100%25-orange.svg)](#)
 
@@ -27,22 +27,22 @@ Built for heavily filtered networks (such as Iran) with automatic DNS poisoning 
 
 ## Download Prebuilt Binaries
 
-Prebuilt standalone binaries are generated automatically by GitHub Actions for every release on the **[Releases](https://github.com/hossein/zephyr/releases/latest)** page:
+Prebuilt standalone binaries are generated automatically by GitHub Actions for every release on the **[Releases](https://github.com/haliyari/zephyr/releases/latest)** page:
 
 | System / Device | Architecture | Archive |
 |---|---|---|
-| **Android (Termux)** | ARM 64-bit (`aarch64` / `arm64-v8a`) | [`zephyr-android-arm64.tar.gz`](https://github.com/hossein/zephyr/releases/latest) |
-| **Android (Termux)** | ARM 32-bit (`armv7` / `armeabi-v7a`) | [`zephyr-android-armv7.tar.gz`](https://github.com/hossein/zephyr/releases/latest) |
-| **Android (Termux)** | x86_64 | [`zephyr-android-x86_64.tar.gz`](https://github.com/hossein/zephyr/releases/latest) |
-| **Linux (glibc)** | x86_64 (Desktop & Server) | [`zephyr-linux-x86_64.tar.gz`](https://github.com/hossein/zephyr/releases/latest) |
-| **Linux (glibc)** | ARM 64-bit (`aarch64`) | [`zephyr-linux-arm64.tar.gz`](https://github.com/hossein/zephyr/releases/latest) |
-| **Linux (glibc)** | ARM 32-bit (`armv7`) | [`zephyr-linux-armv7.tar.gz`](https://github.com/hossein/zephyr/releases/latest) |
-| **Linux (musl static)** | x86_64 (Alpine / OpenWrt / Routers) | [`zephyr-linux-x86_64-musl.tar.gz`](https://github.com/hossein/zephyr/releases/latest) |
-| **Linux (musl static)** | ARM 64-bit (OpenWrt / Routers) | [`zephyr-linux-aarch64-musl.tar.gz`](https://github.com/hossein/zephyr/releases/latest) |
-| **Linux (musl static)** | ARM 32-bit (OpenWrt / Routers) | [`zephyr-linux-armv7-musl.tar.gz`](https://github.com/hossein/zephyr/releases/latest) |
-| **macOS** | Apple Silicon (`M1`/`M2`/`M3`/`M4`) | [`zephyr-macos-arm64.tar.gz`](https://github.com/hossein/zephyr/releases/latest) |
-| **macOS** | Intel (`x86_64`) | [`zephyr-macos-x86_64.tar.gz`](https://github.com/hossein/zephyr/releases/latest) |
-| **Windows** | x86_64 | [`zephyr-windows-x86_64.zip`](https://github.com/hossein/zephyr/releases/latest) |
+| **Android (Termux)** | ARM 64-bit (`aarch64` / `arm64-v8a`) | [`zephyr-android-arm64.tar.gz`](https://github.com/haliyari/zephyr/releases/latest) |
+| **Android (Termux)** | ARM 32-bit (`armv7` / `armeabi-v7a`) | [`zephyr-android-armv7.tar.gz`](https://github.com/haliyari/zephyr/releases/latest) |
+| **Android (Termux)** | x86_64 | [`zephyr-android-x86_64.tar.gz`](https://github.com/haliyari/zephyr/releases/latest) |
+| **Linux (glibc)** | x86_64 (Desktop & Server) | [`zephyr-linux-x86_64.tar.gz`](https://github.com/haliyari/zephyr/releases/latest) |
+| **Linux (glibc)** | ARM 64-bit (`aarch64`) | [`zephyr-linux-arm64.tar.gz`](https://github.com/haliyari/zephyr/releases/latest) |
+| **Linux (glibc)** | ARM 32-bit (`armv7`) | [`zephyr-linux-armv7.tar.gz`](https://github.com/haliyari/zephyr/releases/latest) |
+| **Linux (musl static)** | x86_64 (Alpine / OpenWrt / Routers) | [`zephyr-linux-x86_64-musl.tar.gz`](https://github.com/haliyari/zephyr/releases/latest) |
+| **Linux (musl static)** | ARM 64-bit (OpenWrt / Routers) | [`zephyr-linux-aarch64-musl.tar.gz`](https://github.com/haliyari/zephyr/releases/latest) |
+| **Linux (musl static)** | ARM 32-bit (OpenWrt / Routers) | [`zephyr-linux-armv7-musl.tar.gz`](https://github.com/haliyari/zephyr/releases/latest) |
+| **macOS** | Apple Silicon (`M1`/`M2`/`M3`/`M4`) | [`zephyr-macos-arm64.tar.gz`](https://github.com/haliyari/zephyr/releases/latest) |
+| **macOS** | Intel (`x86_64`) | [`zephyr-macos-x86_64.tar.gz`](https://github.com/haliyari/zephyr/releases/latest) |
+| **Windows** | x86_64 | [`zephyr-windows-x86_64.zip`](https://github.com/haliyari/zephyr/releases/latest) |
 
 Every release includes individual `.sha256` files and a unified `SHA256SUMS.txt`.
 
@@ -52,13 +52,13 @@ Every release includes individual `.sha256` files and a unified `SHA256SUMS.txt`
 
 ### Termux (Android)
 ```bash
-curl -fsSL https://raw.githubusercontent.com/hossein/zephyr/main/zephyr.sh -o zephyr.sh && chmod +x zephyr.sh && ./zephyr.sh install
+curl -fsSL https://raw.githubusercontent.com/haliyari/zephyr/main/zephyr.sh -o zephyr.sh && chmod +x zephyr.sh && ./zephyr.sh install
 ```
 *Installs directly into `$PREFIX/bin/zephyr`. See the [Termux Guide](Docs/TERMUX.en.md) for details.*
 
 ### Linux / macOS
 ```bash
-curl -fsSL https://raw.githubusercontent.com/hossein/zephyr/main/zephyr.sh -o zephyr.sh && chmod +x zephyr.sh && ./zephyr.sh install
+curl -fsSL https://raw.githubusercontent.com/haliyari/zephyr/main/zephyr.sh -o zephyr.sh && chmod +x zephyr.sh && ./zephyr.sh install
 ```
 
 ---

@@ -18,7 +18,7 @@
 
 دستور زیر را در محیط ترموکس کپی و اجرا نمایید:
 ```bash
-curl -fsSL https://raw.githubusercontent.com/hossein/zephyr/main/zephyr.sh -o zephyr.sh && chmod +x zephyr.sh && ./zephyr.sh install
+curl -fsSL https://raw.githubusercontent.com/haliyari/zephyr/main/zephyr.sh -o zephyr.sh && chmod +x zephyr.sh && ./zephyr.sh install
 ```
 
 این اسکریپت به صورت خودکار:

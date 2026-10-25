@@ -1,6 +1,6 @@
 # زفیر (Zephyr)
 
-[![Release CI](https://github.com/hossein/zephyr/actions/workflows/release.yml/badge.svg)](https://github.com/hossein/zephyr/actions/workflows/release.yml)
+[![Release CI](https://github.com/haliyari/zephyr/actions/workflows/release.yml/badge.svg)](https://github.com/haliyari/zephyr/actions/workflows/release.yml)
 [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](LICENSE)
 [![Rust 100%](https://img.shields.io/badge/Rust-100%25-orange.svg)](#)
 
@@ -29,33 +29,33 @@
 
 ### ترموکس اندروید (بدون روت)
 ```bash
-curl -fsSL https://raw.githubusercontent.com/hossein/zephyr/main/zephyr.sh -o zephyr.sh && chmod +x zephyr.sh && ./zephyr.sh install
+curl -fsSL https://raw.githubusercontent.com/haliyari/zephyr/main/zephyr.sh -o zephyr.sh && chmod +x zephyr.sh && ./zephyr.sh install
 ```
 *برای جزئیات بیشتر [راهنمای ترموکس](Docs/TERMUX.fa.md) را مطالعه فرمایید.*
 
 ### لینوکس و مک
 ```bash
-curl -fsSL https://raw.githubusercontent.com/hossein/zephyr/main/zephyr.sh -o zephyr.sh && chmod +x zephyr.sh && ./zephyr.sh install
+curl -fsSL https://raw.githubusercontent.com/haliyari/zephyr/main/zephyr.sh -o zephyr.sh && chmod +x zephyr.sh && ./zephyr.sh install
 ```
 
 ---
 
 ## دانلود باینری‌های آماده
 
-تمام فایل‌ها به صورت خودکار توسط گیت‌هاب اکشنز بیلد شده و در صفحه **[Releases](https://github.com/hossein/zephyr/releases/latest)** در دسترس هستند:
+تمام فایل‌ها به صورت خودکار توسط گیت‌هاب اکشنز بیلد شده و در صفحه **[Releases](https://github.com/haliyari/zephyr/releases/latest)** در دسترس هستند:
 
 | سیستم‌عامل | معماری پردازنده | فایل آرشیو |
 |---|---|---|
-| **ترموکس اندروید** | 64 بیتی (`aarch64` / `arm64-v8a`) | [`zephyr-android-arm64.tar.gz`](https://github.com/hossein/zephyr/releases/latest) |
-| **ترموکس اندروید** | 32 بیتی (`armv7` / `armeabi-v7a`) | [`zephyr-android-armv7.tar.gz`](https://github.com/hossein/zephyr/releases/latest) |
-| **ترموکس اندروید** | x86_64 | [`zephyr-android-x86_64.tar.gz`](https://github.com/hossein/zephyr/releases/latest) |
-| **لینوکس (glibc)** | x86_64 (دسکتاپ و سرور) | [`zephyr-linux-x86_64.tar.gz`](https://github.com/hossein/zephyr/releases/latest) |
-| **لینوکس (glibc)** | ARM 64-bit | [`zephyr-linux-arm64.tar.gz`](https://github.com/hossein/zephyr/releases/latest) |
-| **لینوکس استاتیک (musl)** | x86_64 (روترها و OpenWrt) | [`zephyr-linux-x86_64-musl.tar.gz`](https://github.com/hossein/zephyr/releases/latest) |
-| **لینوکس استاتیک (musl)** | ARM 64-bit (روترها و OpenWrt) | [`zephyr-linux-aarch64-musl.tar.gz`](https://github.com/hossein/zephyr/releases/latest) |
-| **مک (macOS)** | اپل سیلیکون (`M1`/`M2`/`M3`/`M4`) | [`zephyr-macos-arm64.tar.gz`](https://github.com/hossein/zephyr/releases/latest) |
-| **مک (macOS)** | اینتل (`x86_64`) | [`zephyr-macos-x86_64.tar.gz`](https://github.com/hossein/zephyr/releases/latest) |
-| **ویندوز** | x86_64 | [`zephyr-windows-x86_64.zip`](https://github.com/hossein/zephyr/releases/latest) |
+| **ترموکس اندروید** | 64 بیتی (`aarch64` / `arm64-v8a`) | [`zephyr-android-arm64.tar.gz`](https://github.com/haliyari/zephyr/releases/latest) |
+| **ترموکس اندروید** | 32 بیتی (`armv7` / `armeabi-v7a`) | [`zephyr-android-armv7.tar.gz`](https://github.com/haliyari/zephyr/releases/latest) |
+| **ترموکس اندروید** | x86_64 | [`zephyr-android-x86_64.tar.gz`](https://github.com/haliyari/zephyr/releases/latest) |
+| **لینوکس (glibc)** | x86_64 (دسکتاپ و سرور) | [`zephyr-linux-x86_64.tar.gz`](https://github.com/haliyari/zephyr/releases/latest) |
+| **لینوکس (glibc)** | ARM 64-bit | [`zephyr-linux-arm64.tar.gz`](https://github.com/haliyari/zephyr/releases/latest) |
+| **لینوکس استاتیک (musl)** | x86_64 (روترها و OpenWrt) | [`zephyr-linux-x86_64-musl.tar.gz`](https://github.com/haliyari/zephyr/releases/latest) |
+| **لینوکس استاتیک (musl)** | ARM 64-bit (روترها و OpenWrt) | [`zephyr-linux-aarch64-musl.tar.gz`](https://github.com/haliyari/zephyr/releases/latest) |
+| **مک (macOS)** | اپل سیلیکون (`M1`/`M2`/`M3`/`M4`) | [`zephyr-macos-arm64.tar.gz`](https://github.com/haliyari/zephyr/releases/latest) |
+| **مک (macOS)** | اینتل (`x86_64`) | [`zephyr-macos-x86_64.tar.gz`](https://github.com/haliyari/zephyr/releases/latest) |
+| **ویندوز** | x86_64 | [`zephyr-windows-x86_64.zip`](https://github.com/haliyari/zephyr/releases/latest) |
 
 ---
 

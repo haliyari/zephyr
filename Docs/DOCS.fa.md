@@ -65,7 +65,7 @@
 
 ترموکس را باز کرده و دستور زیر را اجرا کنید:
 ```bash
-curl -fsSL https://raw.githubusercontent.com/hossein/zephyr/main/zephyr.sh -o zephyr.sh && chmod +x zephyr.sh && ./zephyr.sh install
+curl -fsSL https://raw.githubusercontent.com/haliyari/zephyr/main/zephyr.sh -o zephyr.sh && chmod +x zephyr.sh && ./zephyr.sh install
 ```
 
 پس از اتمام نصب، برای اتصال کافیست بنویسید:
@@ -76,12 +76,12 @@ zephyr connect --auto
 ### نصب سریع تک‌خطی در لینوکس و مک
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/hossein/zephyr/main/zephyr.sh -o zephyr.sh && chmod +x zephyr.sh && ./zephyr.sh install
+curl -fsSL https://raw.githubusercontent.com/haliyari/zephyr/main/zephyr.sh -o zephyr.sh && chmod +x zephyr.sh && ./zephyr.sh install
 ```
 
 ### دانلود باینری‌های کامپایل‌شده
 
-می‌توانید فایل باینری متناسب با سیستم خود را مستقیماً از بخش [Releases در گیت‌هاب](https://github.com/hossein/zephyr/releases) دریافت کنید:
+می‌توانید فایل باینری متناسب با سیستم خود را مستقیماً از بخش [Releases در گیت‌هاب](https://github.com/haliyari/zephyr/releases) دریافت کنید:
 
 | سیستم‌عامل | معماری پردازنده | فایل آرشیو |
 |---|---|---|

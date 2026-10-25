@@ -8,7 +8,7 @@ set -euo pipefail
 # ==============================================================================
 
 readonly BIN_NAME="zephyr"
-readonly REPO="${ZEPHYR_REPO:-hossein/zephyr}"
+readonly REPO="${ZEPHYR_REPO:-haliyari/zephyr}"
 readonly API_BASE="https://api.github.com/repos/${REPO}"
 
 # Terminal colors

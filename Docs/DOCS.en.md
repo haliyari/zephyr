@@ -84,7 +84,7 @@ Traditional MS-SSTP clients on Linux require:
 
 ### Prebuilt Binaries
 
-Prebuilt binaries are published for every release on the [GitHub Releases](https://github.com/hossein/zephyr/releases) page:
+Prebuilt binaries are published for every release on the [GitHub Releases](https://github.com/haliyari/zephyr/releases) page:
 
 | Platform | Target Architecture | Release Archive |
 |---|---|---|
@@ -107,13 +107,13 @@ Every release includes matching `.sha256` files and `SHA256SUMS.txt`.
 
 Open Termux and run:
 ```bash
-curl -fsSL https://raw.githubusercontent.com/hossein/zephyr/main/zephyr.sh -o zephyr.sh && chmod +x zephyr.sh && ./zephyr.sh install
+curl -fsSL https://raw.githubusercontent.com/haliyari/zephyr/main/zephyr.sh -o zephyr.sh && chmod +x zephyr.sh && ./zephyr.sh install
 ```
 
 ### Linux / macOS One-Line Install
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/hossein/zephyr/main/zephyr.sh -o zephyr.sh && chmod +x zephyr.sh && ./zephyr.sh install
+curl -fsSL https://raw.githubusercontent.com/haliyari/zephyr/main/zephyr.sh -o zephyr.sh && chmod +x zephyr.sh && ./zephyr.sh install
 ```
 
 ### Building from Source
