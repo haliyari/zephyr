@@ -1,0 +1,13 @@
+/target/
+dist/
+zephyr
+zephyr.exe
+*.tar.gz
+*.zip
+*.sha256
+SHA256SUMS.txt
+servers.json
+.cache/
+.DS_Store
+*.swp
+*.bak
