@@ -195,7 +195,9 @@ do_install() {
 
   check_dependencies "${env}"
 
-  TMP_DIR="$(mktemp -d /tmp/vpngate-install.XXXXXX 2>/dev/null || mktemp -d -t 'vpngate-install')"
+  local tmp_base="${TMPDIR:-/tmp}"
+  mkdir -p "${tmp_base}" 2>/dev/null || true
+  TMP_DIR="$(mktemp -d "${tmp_base}/zephyr.XXXXXX" 2>/dev/null || mktemp -d -t 'zephyr.XXXXXX' 2>/dev/null || mktemp -d)"
   local archive_path="${TMP_DIR}/${archive_name}"
   local sha_path="${TMP_DIR}/${archive_name}.sha256"
 
@@ -305,6 +307,8 @@ case "${1:-install}" in
     do_run connect --auto "$@" ;;
   help|--help|-h)
     show_help ;;
+  version|--version|-v|-V)
+    do_run --version ;;
   *)
     # Pass through other arguments directly to the binary
     do_run "$@" ;;
