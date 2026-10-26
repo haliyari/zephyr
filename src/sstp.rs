@@ -427,12 +427,15 @@ pub async fn connect_sstp(
     let (mut tls_read, mut tls_write) = tokio::io::split(tls);
     let (tx_to_sstp, mut rx_from_stack) = mpsc::channel::<Vec<u8>>(1024);
     let (tx_to_stack, rx_to_stack) = mpsc::channel::<Vec<u8>>(1024);
-    let (shutdown_tx, mut shutdown_rx1) = tokio::sync::broadcast::channel::<()>(2);
+    let (tx_ctrl_to_sstp, mut rx_ctrl_from_inbound) = mpsc::channel::<Vec<u8>>(128);
+    let (shutdown_tx, mut shutdown_rx1) = tokio::sync::broadcast::channel::<()>(4);
     let mut shutdown_rx2 = shutdown_tx.subscribe();
+    let shutdown_tx_outbound = shutdown_tx.clone();
+    let shutdown_tx_inbound = shutdown_tx.clone();
 
-    // Outbound Task: stack -> SSTP TLS
+    // Outbound Task: stack & control packets -> SSTP TLS
     tokio::spawn(async move {
-        let mut echo_ticker = tokio::time::interval(Duration::from_secs(20));
+        let mut echo_ticker = tokio::time::interval(Duration::from_secs(15));
         echo_ticker.tick().await;
 
         loop {
@@ -442,12 +445,22 @@ pub async fn connect_sstp(
                     let _ = tls_write.shutdown().await;
                     break;
                 }
+                Some(ctrl_pkt) = rx_ctrl_from_inbound.recv() => {
+                    if tls_write.write_all(&ctrl_pkt).await.is_err() {
+                        let _ = shutdown_tx_outbound.send(());
+                        break;
+                    }
+                }
                 _ = echo_ticker.tick() => {
-                    let _ = tls_write.write_all(&encode_sstp_control(ECHO_REQUEST, &[])).await;
+                    if tls_write.write_all(&encode_sstp_control(ECHO_REQUEST, &[])).await.is_err() {
+                        let _ = shutdown_tx_outbound.send(());
+                        break;
+                    }
                 }
                 Some(ipv4_packet) = rx_from_stack.recv() => {
                     let ppp = encode_ppp(0x0021, &ipv4_packet);
                     if tls_write.write_all(&encode_sstp_data(&ppp)).await.is_err() {
+                        let _ = shutdown_tx_outbound.send(());
                         break;
                     }
                 }
@@ -455,7 +468,7 @@ pub async fn connect_sstp(
         }
     });
 
-    // Inbound Task: SSTP TLS -> stack
+    // Inbound Task: SSTP TLS -> stack & keepalive control responder
     tokio::spawn(async move {
         loop {
             tokio::select! {
@@ -469,8 +482,11 @@ pub async fn connect_sstp(
                                 if body.len() >= 2 {
                                     let msg = u16::from_be_bytes([body[0], body[1]]);
                                     if msg == ECHO_REQUEST {
-                                        // Ignore or reply in outbound
+                                        // MS-SSTP Server Keepalive: reply with ECHO_RESPONSE immediately
+                                        let resp = encode_sstp_control(ECHO_RESPONSE, &[]);
+                                        let _ = tx_ctrl_to_sstp.send(resp).await;
                                     } else if msg == CALL_DISCONNECT || msg == 5 { // CALL_ABORT
+                                        let _ = shutdown_tx_inbound.send(());
                                         break;
                                     }
                                 }
@@ -478,15 +494,56 @@ pub async fn connect_sstp(
                                 if body.starts_with(&[0xff, 0x03]) {
                                     body = body[2..].to_vec();
                                 }
-                                if body.len() >= 2 && u16::from_be_bytes([body[0], body[1]]) == 0x0021 {
-                                    let ipv4_packet = body[2..].to_vec();
-                                    if tx_to_stack.send(ipv4_packet).await.is_err() {
-                                        break;
+                                if body.len() >= 2 {
+                                    let proto = u16::from_be_bytes([body[0], body[1]]);
+                                    if proto == 0x0021 {
+                                        // IPv4 Data Packet
+                                        let ipv4_packet = body[2..].to_vec();
+                                        if tx_to_stack.send(ipv4_packet).await.is_err() {
+                                            let _ = shutdown_tx_inbound.send(());
+                                            break;
+                                        }
+                                    } else if proto == PPP_LCP {
+                                        // PPP LCP Watchdog / Keepalive Handler
+                                        let ppp_body = &body[2..];
+                                        if !ppp_body.is_empty() {
+                                            let code = ppp_body[0];
+                                            let id = if ppp_body.len() > 1 { ppp_body[1] } else { 0 };
+                                            if code == 9 {
+                                                // LCP Echo-Request (Code 9): MUST reply with Echo-Reply (Code 10)
+                                                // Otherwise SoftEther/VPN Gate server drops connection after 2-3 minutes!
+                                                let mut reply = Vec::with_capacity(ppp_body.len());
+                                                reply.push(10); // Echo-Reply Code
+                                                reply.push(id); // Matching Identifier
+                                                if ppp_body.len() >= 4 {
+                                                    reply.extend_from_slice(&ppp_body[2..4]); // Length
+                                                    if ppp_body.len() >= 8 {
+                                                        // Replace sender's magic number with client magic (0x00000000)
+                                                        reply.extend_from_slice(&[0, 0, 0, 0]);
+                                                        reply.extend_from_slice(&ppp_body[8..]); // Preserve data
+                                                    } else {
+                                                        reply.extend_from_slice(&ppp_body[4..]);
+                                                    }
+                                                } else {
+                                                    reply.extend_from_slice(&[0, 4]);
+                                                }
+                                                let lcp_reply_pkt = encode_ppp(PPP_LCP, &reply);
+                                                let sstp_data = encode_sstp_data(&lcp_reply_pkt);
+                                                let _ = tx_ctrl_to_sstp.send(sstp_data).await;
+                                            } else if code == 5 {
+                                                // LCP Terminate-Request (Code 5): Reply with Terminate-Ack (Code 6)
+                                                let term_ack = encode_ppp(PPP_LCP, &encode_ppp_control(6, id, &[]));
+                                                let _ = tx_ctrl_to_sstp.send(encode_sstp_data(&term_ack)).await;
+                                                let _ = shutdown_tx_inbound.send(());
+                                                break;
+                                            }
+                                        }
                                     }
                                 }
                             }
                         }
                         Err(_) => {
+                            let _ = shutdown_tx_inbound.send(());
                             break;
                         }
                     }

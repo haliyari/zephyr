@@ -394,6 +394,7 @@ async fn handle_connect(args: ConnectArgs) {
             });
 
             // Wait for Ctrl+C or connection abort
+            let mut tunnel_shutdown_rx = shutdown_tx.subscribe();
             let mut ticker = tokio::time::interval(Duration::from_secs(2));
             ticker.tick().await;
 
@@ -404,6 +405,11 @@ async fn handle_connect(args: ConnectArgs) {
                         let _ = shutdown_tx.send(());
                         tokio::time::sleep(Duration::from_millis(150)).await;
                         println!("{}Disconnected. Local proxy port {} closed.{}", GREEN, args.listen, RESET);
+                        break;
+                    }
+                    _ = tunnel_shutdown_rx.recv() => {
+                        println!("\n{}⚠️  VPN tunnel connection closed by remote server.{}", RED, RESET);
+                        println!("{}Local proxy port {} closed.{}", YELLOW, args.listen, RESET);
                         break;
                     }
                     _ = ticker.tick() => {
