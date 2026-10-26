@@ -1,0 +1,50 @@
+name: sync-data
+
+on:
+  schedule:
+    # Run every 2 hours
+    - cron: '0 */2 * * *'
+  workflow_dispatch:
+  push:
+    paths:
+      - '.github/scripts/sync_vpngate.py'
+      - '.github/workflows/sync-data.yml'
+    branches:
+      - main
+
+permissions:
+  contents: write
+
+jobs:
+  sync:
+    name: Sync VPNGate Data
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Fetch and process VPNGate data
+        run: |
+          mkdir -p /tmp/vpngate_out
+          python3 .github/scripts/sync_vpngate.py /tmp/vpngate_out
+
+      - name: Push data to orphan branch
+        run: |
+          mkdir -p /tmp/data_repo
+          cd /tmp/data_repo
+          git init
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git remote add origin "https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git"
+
+          cp /tmp/vpngate_out/servers.json ./servers.json
+          cp /tmp/vpngate_out/mirrors.json ./mirrors.json
+
+          git add servers.json mirrors.json
+          git commit -m "chore(data): auto-sync vpngate servers and mirrors [skip ci]"
+          git push --force origin HEAD:data

@@ -2,9 +2,17 @@ use std::fs;
 use std::path::PathBuf;
 use std::time::{Duration, SystemTime};
 use base64::prelude::*;
+use serde::Deserialize;
 use crate::models::SSTPServer;
 
 const DEFAULT_CACHE_TTL_SECS: u64 = 4 * 3600; // 4 hours
+const REQUEST_TIMEOUT_SECS: u64 = 6;
+
+#[derive(Debug, Deserialize)]
+struct MirrorList {
+    #[serde(default)]
+    mirrors: Vec<String>,
+}
 
 pub fn get_executable_dir() -> PathBuf {
     if let Ok(exe) = std::env::current_exe() {
@@ -56,19 +64,82 @@ pub fn save_to_cache(servers: &[SSTPServer]) {
     }
 }
 
-pub fn fetch_csv_data() -> Option<String> {
-    let urls = [
-        "http://www.vpngate.net/api/iphone/",
-        "http://vpngate.net/api/iphone/",
-        "https://www.vpngate.net/api/iphone/",
-        "https://vpngate.net/api/iphone/",
+/// Tier 1: Try to fetch pre-built, lightweight JSON (~30 KB) directly from GitHub CDN
+fn fetch_servers_json() -> Option<Vec<SSTPServer>> {
+    let endpoints = [
+        "https://cdn.jsdelivr.net/gh/haliyari/zephyr@data/servers.json",
+        "https://fastly.jsdelivr.net/gh/haliyari/zephyr@data/servers.json",
+        "https://raw.githubusercontent.com/haliyari/zephyr/data/servers.json",
     ];
 
-    for url in urls {
+    for url in endpoints {
         let resp = ureq::get(url)
-            .set("User-Agent", "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36")
+            .set("User-Agent", "Mozilla/5.0 Zephyr/0.1.0")
+            .set("Accept", "application/json")
+            .timeout(Duration::from_secs(REQUEST_TIMEOUT_SECS))
+            .call();
+
+        if let Ok(r) = resp {
+            if let Ok(body) = r.into_string() {
+                if let Ok(servers) = serde_json::from_str::<Vec<SSTPServer>>(&body) {
+                    if !servers.is_empty() {
+                        return Some(servers);
+                    }
+                }
+            }
+        }
+    }
+    None
+}
+
+/// Tier 2: Try to fetch live mirror endpoints from GitHub CDN
+fn fetch_mirrors_list() -> Vec<String> {
+    let endpoints = [
+        "https://cdn.jsdelivr.net/gh/haliyari/zephyr@data/mirrors.json",
+        "https://fastly.jsdelivr.net/gh/haliyari/zephyr@data/mirrors.json",
+        "https://raw.githubusercontent.com/haliyari/zephyr/data/mirrors.json",
+    ];
+
+    for url in endpoints {
+        let resp = ureq::get(url)
+            .set("User-Agent", "Mozilla/5.0 Zephyr/0.1.0")
+            .set("Accept", "application/json")
+            .timeout(Duration::from_secs(REQUEST_TIMEOUT_SECS))
+            .call();
+
+        if let Ok(r) = resp {
+            if let Ok(body) = r.into_string() {
+                if let Ok(data) = serde_json::from_str::<MirrorList>(&body) {
+                    if !data.mirrors.is_empty() {
+                        return data.mirrors;
+                    }
+                }
+            }
+        }
+    }
+    Vec::new()
+}
+
+pub fn fetch_csv_data(mirrors: &[String]) -> Option<String> {
+    let mut urls = Vec::new();
+
+    // Prioritize mirror direct IP endpoints (bypasses Iranian DNS and SNI filtering)
+    for m in mirrors {
+        let base = m.trim().trim_end_matches('/');
+        urls.push(format!("{}/api/iphone/", base));
+    }
+
+    // Direct official endpoints as fallback
+    urls.push("http://www.vpngate.net/api/iphone/".to_string());
+    urls.push("http://vpngate.net/api/iphone/".to_string());
+    urls.push("https://www.vpngate.net/api/iphone/".to_string());
+    urls.push("https://vpngate.net/api/iphone/".to_string());
+
+    for url in urls {
+        let resp = ureq::get(&url)
+            .set("User-Agent", "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36")
             .set("Accept", "*/*")
-            .timeout(Duration::from_secs(10))
+            .timeout(Duration::from_secs(REQUEST_TIMEOUT_SECS))
             .call();
 
         if let Ok(r) = resp {
@@ -164,7 +235,15 @@ pub fn get_sstp_servers(force_refresh: bool) -> Vec<SSTPServer> {
         }
     }
 
-    if let Some(csv) = fetch_csv_data() {
+    // Tier 1: Try GitHub CDN pre-parsed, optimized JSON (~30 KB)
+    if let Some(servers) = fetch_servers_json() {
+        save_to_cache(&servers);
+        return servers;
+    }
+
+    // Tier 2: Fetch mirror list and query active mirrors for CSV
+    let mirrors = fetch_mirrors_list();
+    if let Some(csv) = fetch_csv_data(&mirrors) {
         let servers = parse_csv_servers(&csv);
         if !servers.is_empty() {
             save_to_cache(&servers);
@@ -172,7 +251,18 @@ pub fn get_sstp_servers(force_refresh: bool) -> Vec<SSTPServer> {
         }
     }
 
-    // Fallback to expired cache if network failed
+    // Tier 3: Direct official fallback without mirrors
+    if mirrors.is_empty() {
+        if let Some(csv) = fetch_csv_data(&[]) {
+            let servers = parse_csv_servers(&csv);
+            if !servers.is_empty() {
+                save_to_cache(&servers);
+                return servers;
+            }
+        }
+    }
+
+    // Tier 4: Fallback to expired cache if network failed
     if let Some(cached) = load_from_cache() {
         return cached;
     }
