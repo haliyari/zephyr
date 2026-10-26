@@ -19,7 +19,7 @@ A standalone, pure 100% Rust userspace MS-SSTP client with a built-in local dual
   - [Web Browsers (Firefox, Chrome)](#web-browsers-firefox-chrome)
   - [Telegram Desktop / Android](#telegram-desktop--android)
   - [Terminal & CLI (curl, git)](#terminal--cli-curl-git)
-- [Censorship Circumvention & Iran Reachability](#censorship-circumvention--iran-reachability)
+- [Censorship Circumvention & Reachability Testing](#censorship-circumvention--reachability-testing)
 - [Troubleshooting & FAQ](#troubleshooting--faq)
 
 ---
@@ -130,7 +130,7 @@ The compiled binary will be placed at `target/release/zephyr`.
 
 ### Check Server Reachability
 
-Detects DNS poisoning and network censorship (tailored for Iranian ISPs):
+Detects DNS poisoning and network censorship:
 ```bash
 zephyr check --limit 10
 zephyr check --country JP
@@ -187,9 +187,9 @@ curl -x http://127.0.0.1:1095 https://api.ipify.org
 
 ---
 
-## Censorship Circumvention & Iran Reachability
+## Censorship Circumvention & Reachability Testing
 
-In heavily censored environments (such as Iran), DDNS domains (`*.opengw.net`) are frequently poisoned to return sinkhole addresses (such as `10.10.34.34`).
+In heavily censored environments, DDNS domains (`*.opengw.net`) are frequently poisoned to return sinkhole addresses (such as `10.10.34.34`).
 
 Zephyr's built-in reachability engine:
 1. Queries both the direct IP address and the DDNS hostname in parallel.

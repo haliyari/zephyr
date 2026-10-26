@@ -9,7 +9,7 @@
 
 **Zephyr** is a lightweight, pure **100% Rust** userspace MS-SSTP client with an in-memory TCP/IP stack (`smoltcp`) and local dual **SOCKS5 & HTTP CONNECT** proxy on `127.0.0.1:1095`.
 
-Built for heavily filtered networks (such as Iran) with automatic DNS poisoning bypass, instant launch caching, and **zero sudo / zero root** requirements.
+Built for heavily filtered networks with automatic DNS poisoning bypass, instant launch caching, and **zero sudo / zero root** requirements.
 
 ---
 
@@ -18,7 +18,7 @@ Built for heavily filtered networks (such as Iran) with automatic DNS poisoning 
 - **100% Pure Rust:** Zero Go code, zero Python, zero external C libraries. Compiles into a single standalone binary (~2.9 MB).
 - **100% Userspace:** No `sudo`, no `root` privileges. Does not create kernel `tun`/`tap` devices and does not alter system network configurations or NetworkManager.
 - **Dual Local Proxy:** Exposes `127.0.0.1:1095` as both a SOCKS5 (with remote DNS resolution) and HTTP CONNECT proxy on the same port.
-- **Iran Censorship & DNS Poisoning Bypass:** Probes both direct IPv4 addresses and DDNS hostnames concurrently, discards poisoned sinkhole responses (`10.10.34.34`), and routes directly to unblocked IPs while preserving TLS SNI.
+- **Anti-Censorship & DNS Poisoning Bypass:** Probes both direct IPv4 addresses and DDNS hostnames concurrently, discards poisoned sinkhole responses (`10.10.34.34`), and routes directly to unblocked IPs while preserving TLS SNI.
 - **Instant Launch (< 1 ms):** Local compressed cache with 4-hour automatic refresh.
 - **Graceful Clean Shutdown:** Pressing `Ctrl+C` immediately closes the tunnel and frees port `1095`.
 - **Cross-Platform:** Available for Linux, Android (Termux), macOS, and Windows.
@@ -66,7 +66,7 @@ curl -fsSL https://raw.githubusercontent.com/haliyari/zephyr/main/zephyr.sh -o z
 ## Quick Usage
 
 ```bash
-# 1. Check reachability of servers from your network (Iran)
+# 1. Check reachability of servers from your network
 zephyr check --limit 10
 
 # 2. Connect automatically to the best unblocked server

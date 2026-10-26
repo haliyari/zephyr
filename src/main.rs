@@ -37,7 +37,7 @@ enum Commands {
     #[command(name = "list", alias = "ls", about = "List MS-SSTP servers")]
     List(ListArgs),
 
-    #[command(name = "check", about = "Check server reachability (Domain & IP) from Iran")]
+    #[command(name = "check", about = "Check server reachability (Domain & IP) from your network")]
     Check(CheckArgs),
 
     #[command(name = "connect", alias = "c", about = "Connect to an MS-SSTP server in userspace")]
@@ -61,7 +61,7 @@ struct ListArgs {
     #[arg(short, long, default_value = "score", help = "Sort by: score, speed, ping, users")]
     sort: String,
 
-    #[arg(long, help = "Test reachability from your network (Iran)")]
+    #[arg(long, help = "Test reachability from your local network")]
     check: bool,
 
     #[arg(short, long, help = "Force refresh server list from VPNGate")]
@@ -153,7 +153,7 @@ async fn handle_list(args: ListArgs) {
         let check_count = if args.limit > 0 { args.limit } else { 20 };
         let candidates: Vec<SSTPServer> = filtered.iter().take(check_count).cloned().collect();
         println!(
-            "{}Testing reachability of {} servers from your network (Iran)...{}",
+            "{}Testing reachability of {} servers from your local network...{}",
             CYAN,
             candidates.len(),
             RESET
@@ -207,7 +207,7 @@ async fn handle_check(args: CheckArgs) {
 
     let candidates: Vec<SSTPServer> = filtered.iter().take(args.limit).cloned().collect();
     println!(
-        "{}Checking domain & IP reachability for {} servers from Iran...{}",
+        "{}Checking domain & IP reachability for {} servers...{}",
         CYAN,
         candidates.len(),
         RESET
@@ -302,12 +302,12 @@ async fn handle_connect(args: ConnectArgs) {
 
         if args.auto {
             println!(
-                "{}Checking reachability of top servers from your network (Iran)...{}",
+                "{}Checking reachability of top servers...{}",
                 CYAN, RESET
             );
         } else {
             println!(
-                "{}Checking reachability of servers from your network (Iran)...{}",
+                "{}Checking reachability of servers...{}",
                 CYAN, RESET
             );
         }

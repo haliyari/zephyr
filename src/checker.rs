@@ -62,7 +62,7 @@ pub async fn check_single_server(server: SSTPServer, timeout: Duration) -> Reach
     if let Ok(Ok(mut addrs)) = tokio::time::timeout(timeout, tokio::net::lookup_host(&dom_target)).await {
         if let Some(addr) = addrs.next() {
             let rip = addr.ip().to_string();
-            // Detect Iranian DNS poisoning signatures (e.g. 10.10.34.34, 127.0.0.1, 0.0.0.0)
+            // Detect DNS poisoning and sinkhole signatures (e.g. 10.10.34.34, 127.0.0.1, 0.0.0.0)
             if rip == "10.10.34.34" || rip == "10.10.34.35" || rip == "127.0.0.1" || rip == "0.0.0.0" {
                 dom_ok = false;
             } else {

@@ -123,7 +123,7 @@ fn fetch_mirrors_list() -> Vec<String> {
 pub fn fetch_csv_data(mirrors: &[String]) -> Option<String> {
     let mut urls = Vec::new();
 
-    // Prioritize mirror direct IP endpoints (bypasses Iranian DNS and SNI filtering)
+    // Prioritize mirror direct IP endpoints (bypasses DNS and SNI filtering)
     for m in mirrors {
         let base = m.trim().trim_end_matches('/');
         urls.push(format!("{}/api/iphone/", base));

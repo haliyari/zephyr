@@ -57,8 +57,8 @@ pub fn print_server_table(
 
     if has_reach {
         println!(
-            "{:<4} {:<19} {:<35} {:<6} {:<22} {:<8} {:<10}",
-            "#", "Country", "Endpoint / Host", "Port", "Reachability (Iran)", "RTT", "Speed"
+            "{:<4} {:<19} {:<35} {:<6} {:<15} {:<8} {:<10}",
+            "#", "Country", "Endpoint / Host", "Port", "Reachability", "RTT", "Speed"
         );
     } else {
         println!(

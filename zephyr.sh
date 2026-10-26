@@ -238,7 +238,7 @@ do_install() {
 
   echo ""
   echo -e "${BOLD}Quick Usage:${RESET}"
-  echo -e "  ${CYAN}${BIN_NAME} check --limit 5${RESET}   # Check reachability from Iran"
+  echo -e "  ${CYAN}${BIN_NAME} check --limit 5${RESET}   # Check server reachability"
   echo -e "  ${CYAN}${BIN_NAME} connect --auto${RESET}     # Auto-connect & listen on 127.0.0.1:1095"
   echo -e "  ${CYAN}${BIN_NAME} --help${RESET}             # Show all commands"
 }

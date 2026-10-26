@@ -30,7 +30,7 @@ curl -fsSL https://raw.githubusercontent.com/haliyari/zephyr/main/zephyr.sh -o z
 
 ## ۳. اتصال به سرور
 
-برای اتصال خودکار به بهترین سرور باز از ایران، دستور زیر را در ترموکس وارد کنید:
+برای اتصال خودکار به بهترین سرور در دسترس، دستور زیر را در ترموکس وارد کنید:
 ```bash
 zephyr connect --auto
 ```
